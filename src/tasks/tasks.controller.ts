@@ -13,6 +13,7 @@ import {
 } from '@nestjs/common';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { GetTasksFilterDto } from './dto/get-tasks-filter.dto';
+import { TasksStatusValidationPipe } from './pipes/task-status-validation.pipes';
 import { Task, TaskStatus } from './tasks.model';
 import { TasksService } from './tasks.service';
 
@@ -47,14 +48,14 @@ export class TasksController {
   }
 
   @Delete('/:id')
-  deleteTaskById(@Param('id') id: string): Task[] {
-    return this.taskService.deleteTask(id);
+  deleteTaskById(@Param('id') id: string): void {
+    this.taskService.deleteTask(id);
   }
 
   @Patch('/:id/status')
   updateTaskStatus(
     @Param('id') id: string,
-    @Body('status') status: TaskStatus,
+    @Body('status', TasksStatusValidationPipe) status: TaskStatus,
   ): Task {
     return this.taskService.updateTaskStatus(id, status);
   }
