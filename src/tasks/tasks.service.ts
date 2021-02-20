@@ -13,6 +13,10 @@ export class TasksService {
     private taskRepository: TaskRepository,
   ) {}
 
+  async getTasks(filterDto: GetTasksFilterDto): Promise<Task[]> {
+    return this.taskRepository.getTasks(filterDto);
+  }
+
   async getTaskById(id: number): Promise<Task> {
     const found = await this.taskRepository.findOne(id);
 
@@ -24,13 +28,7 @@ export class TasksService {
   }
 
   async createTask(createTaskDto: CreateTaskDto): Promise<Task> {
-    const { title, description } = createTaskDto;
-    const task = new Task();
-    task.title = title;
-    task.description = description;
-    task.status = TaskStatus.OPEN;
-    await task.save();
-
+    const task = await this.taskRepository.createTask(createTaskDto);
     return task;
   }
 
